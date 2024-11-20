@@ -1,10 +1,35 @@
 import re
+import os
+import ssl
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-nltk.data.path.append('nltk_data')
+# Necessary to download nltk ressources
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
 
+def check_and_download_nltk_resources():
+    nltk_paths = nltk.data.path
+    nltk_data_found = False
+
+    for path in nltk_paths:
+        if os.path.exists(path):
+            nltk_data_found = True
+            print(f"nltk_data directory found: {path}")
+            break
+
+    if not nltk_data_found:
+        print("Downloading all NLTK resources...")
+        nltk.download()
+
+
+# Nltk local path 
+nltk.data.path.append('nltk_data')
 
 
 class TextCleaner:
@@ -46,11 +71,10 @@ class TextCleaner:
                     "Journal": article.get("Journal"),
                     "URL": article.get("URL"),
                     "Keywords": article.get("Keywords"),
-                    "Cleaned_Abstract": cleaned_text  # New field for cleaned abstract
+                    "Cleaned_Abstract": cleaned_text
                 }
                 cleaned_articles.append(cleaned_article)
             else:
-                # If no abstract available, maintain other data
                 article["Cleaned_Abstract"] = "Not available"
                 cleaned_articles.append(article)
 

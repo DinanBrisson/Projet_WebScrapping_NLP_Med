@@ -27,23 +27,22 @@ class PubMedScraper:
         title = article.find("a", class_="docsum-title").text.strip()
         article_url = self.base_url + article.find("a", class_="docsum-title")["href"]
 
-        # Fetch the article page to get more details
+        # Fetch the article page
         article_page = BeautifulSoup(fetch_page(article_url), "html.parser")
 
         # Extract abstract
         abstract = article_page.find("div", class_="abstract-content").text.strip() if article_page.find("div",
-                                                                                                         class_="abstract-content") else "Not available"
+                                                                                                         class_="abstract-content") else "No abstract found"
 
-        # Extract additional information
+        # Extract all the information
         authors = ", ".join([author.text.strip() for author in
                              article_page.find_all("span", class_="authors-list-item")]) if article_page.find_all(
-            "span", class_="authors-list-item") else "Not available"
+            "span", class_="authors-list-item") else "No authors found"
         year = article_page.find("span", class_="cit").text.strip().split(";")[0] if article_page.find("span",
-                                                                                                       class_="cit") else "Not available"
+                                                                                                       class_="cit") else "Year not precised"
         journal = article_page.find("button", class_="journal-actions-trigger").text.strip() if article_page.find(
-            "button", class_="journal-actions-trigger") else "Not available"
+            "button", class_="journal-actions-trigger") else "Journal not precised"
 
-        # Extract keywords
         keywords = "No Keywords"
         keywords_tag = article_page.find("strong", class_="sub-title")
         if keywords_tag and "Keywords:" in keywords_tag.text:
@@ -59,7 +58,7 @@ class PubMedScraper:
             "URL": article_url
         }
 
-    def scrape_articles(self, num_articles=10):
+    def scrape_articles(self):
         data = []
         current_url = self.query_url
 
@@ -69,7 +68,7 @@ class PubMedScraper:
             articles = soup.find_all("article", class_="full-docsum")
 
             # Collect data for each article on the current page
-            for article in articles[:num_articles]:
+            for article in articles:
                 try:
                     article_data = self.parse_article_data(article)
                     data.append(article_data)
@@ -79,10 +78,9 @@ class PubMedScraper:
 
             # Find the link to the next page
             next_button = soup.find("a", class_="next-page-link")
-            if next_button and len(data) < num_articles:
+            if next_button and len(data):
                 current_url = self.base_url + next_button["href"]
             else:
-                break  # No more pages or enough articles
+                break
 
-        return data[:num_articles]  # Limit to the requested number of articles
-
+        return data

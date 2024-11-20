@@ -1,6 +1,6 @@
 import json
 from Scraper.scraper import PubMedScraper, save_to_json
-from Preprocessor.preprocessor import TextCleaner
+from Preprocessor.preprocessor import TextCleaner, check_and_download_nltk_resources
 from Preprocessor.vectorizer import TextVectorizer
 
 if __name__ == "__main__":
@@ -10,19 +10,23 @@ if __name__ == "__main__":
     scraper = PubMedScraper(query_url=url, pages=1, delay=1)
     articles_data = scraper.scrape_articles()
     save_to_json(articles_data, "pubmed_abstracts.json")
+    article  = [article["Abstract"] for article in articles_data]
+    save_to_json(article, "Abstracts.json")
+
+    # Check and download if necessary
+    check_and_download_nltk_resources()
 
     # Load JSON data
-    with open("pubmed_abstracts.json", "r", encoding="utf-8") as file:
+    with open("Pubmed_abstracts.json", "r", encoding="utf-8") as file:
         articles_data = json.load(file)
 
     # Initialize and apply Preprocessor
     preprocessor = TextCleaner()
     cleaned_data = preprocessor.preprocess(articles_data)
 
-    print("Cleaned abstracts:", cleaned_data)
-
-    # Extract only the cleaned abstracts as a list of strings
     cleaned_texts = [article["Cleaned_Abstract"] for article in cleaned_data]
+
+    save_to_json(cleaned_texts, "Cleaned_Abstracts.json")
 
     save_to_json(cleaned_data, "Cleaned_text.json")
 
