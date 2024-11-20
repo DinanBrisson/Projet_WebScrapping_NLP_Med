@@ -1,4 +1,11 @@
+import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
+
+def save_to_csv(matrix, feature_names, filename):
+    df = pd.DataFrame(matrix.toarray(), columns=feature_names)
+    df.to_csv(filename, index=False)
+    print(f"Data saved to {filename}")
 
 
 class TextVectorizer:

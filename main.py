@@ -1,7 +1,7 @@
 import json
 from Scraper.scraper import PubMedScraper, save_to_json
 from Preprocessor.preprocessor import TextCleaner, check_and_download_nltk_resources
-from Preprocessor.vectorizer import TextVectorizer
+from Preprocessor.vectorizer import TextVectorizer, save_to_csv
 
 if __name__ == "__main__":
     url = "https://pubmed.ncbi.nlm.nih.gov/?term=(%22kidney%20injury%22%20OR%20%22renal%20toxicity%22%20OR%20%22nephrotoxicity%22)%20AND%20(%22drug%20therapy%22%20OR%20medication%20OR%20pharmacotherapy%20OR%20%22nephrotoxic%20drugs%20»)&filter=datesearch.y_10&filter=simsearch1.fha&filter=pubt.clinicaltrial&filter=pubt.randomizedcontrolledtrial&filter=lang.english&filter=hum_ani.humans&sort=jour"
@@ -36,4 +36,6 @@ if __name__ == "__main__":
     tfidf_matrix = vectorizer.fit_transform_tfidf(cleaned_texts)
 
     print("Bag of Words matrix shape:", bow_matrix.shape)
+    save_to_csv(bow_matrix, vectorizer.vectorizer_bow.get_feature_names_out(), "BOW.csv")
     print("TF-IDF matrix shape:", tfidf_matrix.shape)
+    save_to_csv(tfidf_matrix, vectorizer.vectorizer_tfidf.get_feature_names_out(), "TF-IDF.csv")
