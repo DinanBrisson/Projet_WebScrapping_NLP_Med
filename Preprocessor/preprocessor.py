@@ -28,7 +28,7 @@ def check_and_download_nltk_resources():
         nltk.download()
 
 
-# Nltk local path 
+# Nltk local path
 nltk.data.path.append('nltk_data')
 
 

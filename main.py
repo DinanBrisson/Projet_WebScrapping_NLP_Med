@@ -7,7 +7,7 @@ if __name__ == "__main__":
     url = "https://pubmed.ncbi.nlm.nih.gov/?term=(%22kidney%20injury%22%20OR%20%22renal%20toxicity%22%20OR%20%22nephrotoxicity%22)%20AND%20(%22drug%20therapy%22%20OR%20medication%20OR%20pharmacotherapy%20OR%20%22nephrotoxic%20drugs%20»)&filter=datesearch.y_10&filter=simsearch1.fha&filter=pubt.clinicaltrial&filter=pubt.randomizedcontrolledtrial&filter=lang.english&filter=hum_ani.humans&sort=jour"
 
     # Initialize scraper
-    scraper = PubMedScraper(query_url=url, pages=1, delay=1)
+    scraper = PubMedScraper(url=url, pages=1, delay=1)
     articles_data = scraper.scrape_articles()
     save_to_json(articles_data, "pubmed_abstracts.json")
     article  = [article["Abstract"] for article in articles_data]

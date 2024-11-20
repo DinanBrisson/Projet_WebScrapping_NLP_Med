@@ -17,8 +17,8 @@ def fetch_page(url):
 
 
 class PubMedScraper:
-    def __init__(self, query_url, pages=1, delay=1):
-        self.query_url = query_url
+    def __init__(self, url, pages=1, delay=1):
+        self.query_url = url
         self.base_url = "https://pubmed.ncbi.nlm.nih.gov"
         self.pages = pages
         self.delay = delay
